@@ -16,6 +16,6 @@
 exports.handler = async () => {
   return {
     statusCode: 303,
-    headers: { Location: '/thank-you.html?fbpurchase=1' },
+    headers: { Location: '/thank-you.html' },
   };
 };

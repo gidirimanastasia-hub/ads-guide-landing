@@ -9,3 +9,13 @@
   to = "/.netlify/functions/:splat"
   status = 200
   force = true
+
+# WayForPay Return URL: https://target.lipinskaya.com/thanks
+# Платіжка повертає браузер методом POST, а статичні .html-файли Netlify на POST
+# віддають 404. Тому /thanks іде у функцію, яка приймає будь-який метод і
+# 303-редіректом відправляє на /thank-you.html (звичайний GET).
+[[redirects]]
+  from = "/thanks"
+  to = "/.netlify/functions/thank-you-post"
+  status = 200
+  force = true
