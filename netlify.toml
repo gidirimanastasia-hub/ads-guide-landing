@@ -1,0 +1,11 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Коротші, публічні шляхи для клієнтського коду:
+# /api/track-initiate-checkout  →  /.netlify/functions/track-initiate-checkout
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true

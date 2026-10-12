@@ -1,0 +1,12 @@
+{
+  "name": "kristina-lipinskaya-ads-guide",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tripwire-лендинг «Реклама — це інвестиція» (гайд з контролю таргетолога) — статичний сайт + Netlify Functions (WayForPay, Meta CAPI, видача PDF на пошту й у Telegram).",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дякуємо за покупку — Христина Ліпінська</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+
+<!-- Той самий Meta Pixel, що на index.html (1550378259904871). Потрібен тут
+     окремо, бо ця сторінка відкривається як самостійний Return URL з
+     WayForPay (сторінка соціального інвойсу — не наш index.html), і без
+     власного fbq() клієнтський Purchase нижче було б нікуди слати. -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1550378259904871');
+fbq('track', 'PageView');
+</script>
+</head>
+<body>
+<div class="page">
+<div class="column" style="padding-bottom:0;">
+  <section style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 26px;text-align:center;">
+    <p class="eyebrow">{ Дякуємо }</p>
+    <h1 class="h2" style="margin-bottom:16px;">Оплата пройшла успішно</h1>
+    <p id="ty-text" style="font:400 15px/1.65 'Manrope';color:#4A4038;margin-bottom:30px;max-width:340px;">
+      Зараз відкриється Telegram із гайдом. Якщо цього не сталося автоматично — натисніть кнопку нижче.
+    </p>
+    <a id="ty-btn" href="https://t.me/+BECys_gwiAozNDky" class="btn btn-dark" style="max-width:280px;">Отримати гайд</a>
+  </section>
+</div>
+</div>
+<script>
+  var TELEGRAM_LINK = 'https://t.me/+BECys_gwiAozNDky';
+  var params = new URLSearchParams(window.location.search);
+
+  // Якщо посилання зі старого листа веде сюди з токеном (?token=...) —
+  // лишаємо пряме завантаження PDF замість переходу в Telegram (цей канал
+  // видачі зараз не використовується, але лишаємо на випадок старих листів).
+  var token = params.get('token');
+  if (token) {
+    document.getElementById('ty-text').textContent = 'Натисніть на кнопку, щоб отримати гайд.';
+    var btn = document.getElementById('ty-btn');
+    btn.href = '/.netlify/functions/download-guide?token=' + encodeURIComponent(token);
+    btn.textContent = 'Завантажити гайд';
+  }
+
+  // Оплата через "Соціальний інвойс" WayForPay (окрема сторінка на їхньому
+  // боці, без нашого payment-callback.js — там немає Service URL). Return
+  // URL цього інвойсу веде сюди з ?fbpurchase=1. Тут одразу:
+  // 1) шлемо Purchase у Meta (клієнтський Pixel + серверне дублювання
+  //    з тим самим event_id — та сама схема дедуплікації, що й для
+  //    InitiateCheckout у script.js);
+  // 2) автоматично відкриваємо Telegram-групу з гайдом (видача файлу
+  //    тепер відбувається саме там, а не листом на пошту).
+  if (params.get('fbpurchase') === '1' && !token) {
+    var eventId = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : 'id-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+
+    if (window.fbq) {
+      fbq('track', 'Purchase', { value: 900, currency: 'UAH' }, { eventID: eventId });
+    }
+
+    try {
+      fetch('/api/track-purchase-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId }),
+        keepalive: true,
+      });
+    } catch (e) {
+      // мовчки ігноруємо — трекінг не критичний для показу сторінки
+    }
+
+    // Невелика затримка — щоб трекінг-запити встигли піти з браузера
+    // до переходу на інший домен.
+    setTimeout(function () {
+      window.location.href = TELEGRAM_LINK;
+    }, 350);
+  }
+</script>
+</body>
+</html>
