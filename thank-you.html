@@ -74,7 +74,7 @@ fbq('track', 'PageView');
   // event_id — для дедуплікації в Events Manager.
   var eventId = genId();
   if (window.fbq) {
-    fbq('track', 'Purchase', { value: 900, currency: 'UAH' }, { eventID: eventId });
+    fbq('track', 'Purchase', { value: 1900, currency: 'UAH' }, { eventID: eventId });
   }
   var serverCall = fetch('/api/track-purchase-invoice', {
     method: 'POST',

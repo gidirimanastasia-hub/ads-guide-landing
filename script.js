@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const eventId = genId();
 
       if (window.fbq) {
-        fbq('track', 'InitiateCheckout', { value: 900, currency: 'UAH' }, { eventID: eventId });
+        fbq('track', 'InitiateCheckout', { value: 1900, currency: 'UAH' }, { eventID: eventId });
       }
 
       try {
