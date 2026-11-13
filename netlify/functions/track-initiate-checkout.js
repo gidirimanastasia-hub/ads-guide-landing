@@ -43,7 +43,7 @@ exports.handler = async (event) => {
             client_ip_address: clientIp || undefined,
             client_user_agent: userAgent || undefined,
           },
-          custom_data: { value: 900, currency: 'UAH' },
+          custom_data: { value: 1900, currency: 'UAH' },
         }],
       }),
     });
